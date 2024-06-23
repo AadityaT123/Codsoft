@@ -1,0 +1,92 @@
+
+html, body {
+  height: 100%;
+  margin: 0;
+} 
+
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(20deg, rgba(27,15,227,1) 0%, rgba(9,9,121,1) 59%, rgba(0,212,255,1) 95%);
+  background-attachment: fixed;
+}
+
+.container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  border-radius: 8px;
+  margin-top: 28px;
+  background-image: url('https://png.pngtree.com/background/20210716/original/pngtree-light-blue-cute-striped-baby-blue-background-picture-image_1348681.jpg');
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+ 
+}
+
+header, footer {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+ul {
+  padding: 0;
+}
+
+li {
+  list-style: none;
+}
+
+.hidden {
+  display: none;
+}
+
+/* Custom button styling */
+.btn-group-vertical {
+  width: 100%;
+}
+
+.answer-btn {
+  width: 100%;
+  margin-bottom:  11px;
+}
+
+.answer-btn:hover {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.answer-btn.selected {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.btn {
+  margin-top: 10px;
+  margin-left: 3px;
+}
+
+
+#quizScore {
+  font-size: 50px;
+  font-weight: bold;
+  display: inline-block;
+  margin-top: 20px;
+}
+
+
+
+
+
+@media (max-width: 768px) {
+  
+  #container {
+    padding: 10px;
+  }
+
+  #btn-group-toggle {
+    flex-direction: column;
+  }
+
+  #btn {
+    margin: 5px 0;
+  }
+}

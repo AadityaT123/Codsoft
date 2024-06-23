@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Online Quiz Platform</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <header class="text-center">
+      <h1>Welcome to the Online Quiz Platform</h1>
+      <p style="size: 20px;" id="Detail">test your knowledge with our Quizzes</p><br>
+      <button type="button" class="btn btn-primary mt-3" id="startQuizBtn" onclick="startQuiz()">Start Quiz</button>
+    </header>
+    <main>
+      <section id="quizSection" class="hidden">
+        <div id="quizList" class="mb-4">
+          <h2>Available Quizzes</h2>
+          <div class="btn-group btn-group-toggle d-flex flex-wrap" data-toggle="buttons">
+            <label class="btn btn-outline-primary flex-fill m-1">
+              <input type="radio" name="options" id="option1" autocomplete="off" checked onclick="loadQuiz(1)"> General Knowledge Quiz
+            </label>
+            <label class="btn btn-outline-primary flex-fill m-1">
+              <input type="radio" name="options" id="option2" autocomplete="off" onclick="loadQuiz(2)"> Science Quiz
+            </label>
+            <label class="btn btn-outline-primary flex-fill m-1">
+              <input type="radio" name="options" id="option3" autocomplete="off" onclick="loadQuiz(3)"> Computer Quiz
+            </label>
+            <label class="btn btn-outline-primary flex-fill m-1">
+              <input type="radio" name="options" id="option4" autocomplete="off" onclick="loadQuiz(4)"> Basic Maths
+            </label>
+            <label class="btn btn-outline-primary flex-fill m-1">
+              <input type="radio" name="options" id="option5" autocomplete="off" onclick="loadQuiz(5)"> English Quiz
+            </label>
+            <button type="button" class="btn btn-warning mx-3" onclick="resetQuiz()">Reset Quiz</button>
+          </div>
+        </div>
+        
+        <div id="quizContainer" class="hidden">
+          <h2 id="quizTitle">Quiz Title</h2>
+          <form id="quizForm">
+            <div id="quizQuestions" style="font-size: 21px;"></div>
+          </form>
+          
+          <div id="quizControls" class="d-flex justify-content-between mt-3">
+            <button type="button" class="btn btn-secondary" id="prevQuestionBtn" onclick="showQuestion('prev')">Previous</button>
+            <button type="button" class="btn btn-primary" id="nextQuestionBtn" onclick="showQuestion('next')">Next</button>
+            <button type="button" class="btn btn-primary" id="submitQuizBtn" onclick="submitQuiz()">Submit Quiz</button>
+          </div>
+          
+          <div id="quizResults" style="text-align: center;" class="hidden">
+            <h2>Quiz Results</h2>
+            <p>Your score: <span id="quizScore"></span>%</p>
+            <ul id="correctAnswers">
+              <!-- Correct answers will be displayed here -->
+            </ul>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+  
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
