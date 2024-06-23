@@ -5,4 +5,6 @@ The task involved creating an interactive quiz game with five different quizzes:
 3. MathsQuiz
 4.Science Quiz
 5. Computer Quiz
-Each quiz features multiple questions, and users can navigate through questions, submit their answers, and view their scores and correct answers upon completion."
+Each quiz features multiple questions, and users can navigate through questions, submit their answers, and view their scores and correct answers upon completion.
+I created the website with the help of Bootstrap frame work and some React Concepts"
+
