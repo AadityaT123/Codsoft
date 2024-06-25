@@ -158,26 +158,21 @@ const quizzes = [
 
   ];
   
+
   let currentQuizId = 0;
   let currentQuestionIndex = 0;
   let userAnswers = [];
-
+  
   function startQuiz() {
     document.getElementById('startQuizBtn').classList.add('hidden');
     document.getElementById('Detail').classList.add('hidden');
     document.getElementById('quizSection').classList.remove('hidden');
-}
-
+    updateQuizList();
+  }
   
   function loadQuiz(quizId) {
     document.getElementById('quizResults').classList.add('hidden');
-    let quiz = null;
-for (let i = 0; i < quizzes.length; i++) {
-  if (quizzes[i].id === quizId) {
-    quiz = quizzes[i];
-    break;
-  }
-}
+    let quiz = quizzes.find(q => q.id === quizId);
   
     if (!quiz) {
       console.error("Quiz not found!");
@@ -197,16 +192,8 @@ for (let i = 0; i < quizzes.length; i++) {
   }
   
   function loadQuestion(index) {
-      
-
-    let quiz ;
-for (let i = 0; i < quizzes.length; i++) {
-  if (quizzes[i].id === currentQuizId) {
-    quiz = quizzes[i];
-    break; // Exit the loop once the quiz is found
-  }
-}
-
+    let quiz = quizzes.find(q => q.id === currentQuizId);
+  
     if (!quiz || index < 0 || index >= quiz.questions.length) {
       console.error("Invalid question index!");
       return;
@@ -235,7 +222,6 @@ for (let i = 0; i < quizzes.length; i++) {
   }
   
   function recordAnswer(index, value) {
-    
     userAnswers[index] = value;
   
     const answerButtons = document.querySelectorAll('#answersContainer .answer-btn');
@@ -246,117 +232,129 @@ for (let i = 0; i < quizzes.length; i++) {
   
   function showQuestion(direction) {
     if (direction === 'prev') {
-      if (currentQuestionIndex > 0) {
-        currentQuestionIndex--;
-        loadQuestion(currentQuestionIndex);
-      }
+      currentQuestionIndex = Math.max(0, currentQuestionIndex - 1);
     } else if (direction === 'next') {
-      const quiz = quizzes.find(q => q.id === currentQuizId);
-      if (currentQuestionIndex < quiz.questions.length - 1) {
-        currentQuestionIndex++;
-        loadQuestion(currentQuestionIndex);
-      }
+      let quiz = quizzes.find(q => q.id === currentQuizId);
+      currentQuestionIndex = Math.min(quiz.questions.length - 1, currentQuestionIndex + 1);
     }
+  
+    loadQuestion(currentQuestionIndex);
     updateNavigationButtons();
   }
   
   function updateNavigationButtons() {
-    const prevBtn = document.getElementById('prevQuestionBtn');
-    const nextBtn = document.getElementById('nextQuestionBtn');
-    const submitBtn = document.getElementById('submitQuizBtn');
-  
-    prevBtn.disabled = currentQuestionIndex === 0;
-    nextBtn.disabled = currentQuestionIndex === quizzes[currentQuizId - 1].questions.length - 1;
-  }
-
- function resetQuiz() {
-    currentQuizId = 0;
-    currentQuestionIndex = 0;
-    userAnswers = [];
-
-    const quizContainer = document.getElementById('quizContainer');
-    quizContainer.classList.add('hidden');
-
-    const quizResults = document.getElementById('quizResults');
-    quizResults.classList.add('hidden');
-
-    const quizList = document.getElementById('quizList');
-    quizList.classList.remove('hidden');
-
-    document.getElementById('quizScore').textContent = '';
-    document.getElementById('correctAnswers').innerHTML = '';
-
-    const answerButtons = document.querySelectorAll('.answer-btn');
-    answerButtons.forEach(button => button.classList.remove('selected'));
-
-    const prevBtn = document.getElementById('prevQuestionBtn');
-    const nextBtn = document.getElementById('nextQuestionBtn');
-    const submitBtn = document.getElementById('submitQuizBtn');
-
-    const quizControls = document.getElementById('quizControls');
-    quizControls.style.display = 'block';
-
-    const option1Radio = document.getElementById('option1');
-    if (option1Radio) {
-        option1Radio.checked = true;
-        option1Radio.parentNode.classList.add('active');
-    }
-
-    const labels = document.querySelectorAll('.btn-group-toggle .btn');
-    labels.forEach(button => button.classList.remove('active'));
-
-    if (option1Radio) {
-        option1Radio.parentNode.classList.add('active');
-    }
-
-    loadQuiz(1);
-}
-
-
-
-  
-  function submitQuiz() {
     const quiz = quizzes.find(q => q.id === currentQuizId);
-    if (!quiz) {
-      console.error("Quiz not found!");
-      return;
-    }
-  
-    let correctAnswers = 0;
-    quiz.questions.forEach((q, index) => {
-      const selectedAnswerIndex = userAnswers[index];
-      const correctAnswerIndex = q.correctAnswer;
-      if (selectedAnswerIndex === correctAnswerIndex) {
-        correctAnswers++;
-      }
-    });
-  
-    const score = (correctAnswers / quiz.questions.length) * 100;
-  
-    document.getElementById('quizScore').textContent = score.toFixed(2); // Display score with two decimal places
-    const correctAnswersList = document.getElementById('correctAnswers');
-    correctAnswersList.innerHTML = '';
-    quiz.questions.forEach((q, index) => {
-      const correctAnswerIndex = q.correctAnswer;
-      const selectedAnswerIndex = userAnswers[index];
-      const isCorrect = selectedAnswerIndex === correctAnswerIndex;
-    // Determine the text based on whether the answer is correct
-    let answerText;
-  if (isCorrect) {
-    answerText = `<span class="text-success">${q.answers[selectedAnswerIndex]} (Correct)</span>`;
-} else {
-  answerText = `${q.answers[selectedAnswerIndex]} (Your answer), <span class="text-success">${q.answers[correctAnswerIndex]} (Correct)</span>`;
-}
+    document.getElementById('prevQuestionBtn').style.display = currentQuestionIndex === 0 ? 'none' : 'inline-block';
+    document.getElementById('nextQuestionBtn').style.display = currentQuestionIndex === quiz.questions.length - 1 ? 'none' : 'inline-block';
+    document.getElementById('submitQuizBtn').style.display = currentQuestionIndex === quiz.questions.length - 1 ? 'inline-block' : 'none';
+  }
 
-      const listItem = document.createElement('li');
-      listItem.innerHTML = answerText;
-      correctAnswersList.appendChild(listItem);
+
+  function submitQuiz() {
+    let quiz = quizzes.find(q => q.id === currentQuizId);
+    let score = 0;
+    let total = quiz.questions.length;
+  
+    const correctAnswersList = document.getElementById('correctAnswers');
+    const allAnswersList = document.getElementById('allAnswers');
+    correctAnswersList.innerHTML = '';
+    allAnswersList.innerHTML = '';
+  
+    quiz.questions.forEach((question, index) => {
+      const isCorrect = userAnswers[index] === question.correctAnswer;
+      if (isCorrect) {
+        score++;
+      } else {
+        const correctAnswerItem = document.createElement('li');
+        correctAnswerItem.textContent = `Question: ${question.question} - Correct Answer: ${question.answers[question.correctAnswer]}`;
+        correctAnswersList.appendChild(correctAnswerItem);
+      }
+  
+      const userAnswerItem = document.createElement('li');
+      userAnswerItem.textContent = `Question: ${question.question} - Your Answer: ${question.answers[userAnswers[index]]} - ${isCorrect ? 'Correct' : 'Incorrect'}`;
+      allAnswersList.appendChild(userAnswerItem);
     });
   
+    document.getElementById('quizScore').textContent = ((score / total) * 100).toFixed(2);
     document.getElementById('quizResults').classList.remove('hidden');
-    document.getElementById('quizQuestions').innerHTML = '';
-    document.getElementById('quizControls').style.display = 'none';
   }
   
+ function resetQuiz() {
+  currentQuizId = 0;
+  currentQuestionIndex = 0;
+  userAnswers = [];
+  document.getElementById('quizContainer').classList.add('hidden');
+  document.getElementById('quizSection').classList.remove('hidden');
+  document.getElementById('quizResults').classList.add('hidden');
+}
+
+
+  function addQuestion() {
+    const questionsContainer = document.getElementById('questionsContainer');
+    const questionCount = questionsContainer.getElementsByClassName('question-group').length;
+    const newQuestionGroup = document.createElement('div');
+    newQuestionGroup.className = 'form-group question-group';
+  
+    newQuestionGroup.innerHTML = `
+      <label for="question${questionCount + 1}">Question ${questionCount + 1}</label>
+      <input type="text" class="form-control" name="questions" required>
+      <label for="answers${questionCount + 1}">Answers (comma-separated)</label>
+      <input type="text" class="form-control" name="answers" required>
+      <label for="correctAnswer${questionCount + 1}">Correct Answer (index)</label>
+      <input type="number" class="form-control" name="correctAnswers" required>
+    `;
+  
+    questionsContainer.appendChild(newQuestionGroup);
+  }
+  
+  function createQuiz() {
+    const form = document.getElementById('createQuizForm');
+    const formData = new FormData(form);
+    const quizTitle = formData.get('quizTitle');
+    const questions = formData.getAll('questions');
+    const answers = formData.getAll('answers');
+    const correctAnswers = formData.getAll('correctAnswers');
+  
+    const newQuiz = {
+      id: quizzes.length + 1,
+      title: quizTitle,
+      questions: questions.map((q, index) => ({
+        question: q,
+        answers: answers[index].split(','),
+        correctAnswer: parseInt(correctAnswers[index], 10)
+      }))
+    };
+  
+    quizzes.push(newQuiz);
+    form.reset();
+    $('#createQuizModal').modal('hide');
+    updateQuizList();
+  }
+  
+  function updateQuizList() {
+    const quizListDiv = document.getElementById('quizList');
+    const existingQuizButtons = quizListDiv.querySelectorAll('.btn-group-toggle > label');
+  
+    // Remove all existing dynamic quiz buttons (keeping only the predefined ones)
+    existingQuizButtons.forEach((button, index) => {
+      if (index >= 5) button.remove();
+    });
+  
+    quizzes.slice(5).forEach((quiz, index) => {
+      const quizButton = document.createElement('label');
+      quizButton.className = 'btn btn-outline-primary flex-fill m-1';
+      quizButton.innerHTML = `
+        <input type="radio" name="options" id="option${index + 6}" autocomplete="off" onclick="loadQuiz(${quiz.id})"> ${quiz.title}
+      `;
+      quizListDiv.querySelector('.btn-group-toggle').appendChild(quizButton);
+    });
+  }
+  
+
+
+  window.onload = function() {
+    updateQuizList();
+    loadQuiz(1);
+  };
   loadQuiz(1);
   
