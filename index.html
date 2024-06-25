@@ -9,8 +9,9 @@
   <div class="container">
     <header class="text-center">
       <h1>Welcome to the Online Quiz Platform</h1>
-      <p style="size: 20px;" id="Detail">test your knowledge with our Quizzes</p><br>
+      <p style="font-size: 20px;" id="Detail">Test your knowledge with our Quizzes</p><br>
       <button type="button" class="btn btn-primary mt-3" id="startQuizBtn" onclick="startQuiz()">Start Quiz</button>
+      <button type="button" class="btn btn-success mt-3" data-toggle="modal" data-target="#createQuizModal">Create Quiz</button>
     </header>
     <main>
       <section id="quizSection" class="hidden">
@@ -48,19 +49,57 @@
             <button type="button" class="btn btn-primary" id="submitQuizBtn" onclick="submitQuiz()">Submit Quiz</button>
           </div>
           
-          <div id="quizResults" style="text-align: center;" class="hidden">
+          <div id="quizResults" class="hidden">
             <h2>Quiz Results</h2>
-            <p>Your score: <span id="quizScore"></span>%</p>
-            <ul id="correctAnswers">
-              <!-- Correct answers will be displayed here -->
-            </ul>
+            <p>Your score:<br> <span style="text-align: center;" id="quizScore"></span>%</p>
+            <h3>Correct Answers:</h3>
+            <ul id="correctAnswers"></ul>
+            <h3>All Answers:</h3>
+            <ul id="allAnswers"></ul>
+            <button class="btn btn-secondary" onclick="resetQuiz()">Start Over</button>
           </div>
         </div>
       </section>
     </main>
   </div>
-  
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+
+  <div class="modal fade" id="createQuizModal" tabindex="-1" aria-labelledby="createQuizModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="createQuizModalLabel">Create New Quiz</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="createQuizForm">
+            <div class="form-group">
+              <label for="quizTitle">Quiz Title</label>
+              <input type="text" class="form-control" id="quizTitle" name="quizTitle" required>
+            </div>
+            <div id="questionsContainer">
+              <div class="form-group question-group">
+                <label for="question1">Question 1</label>
+                <input type="text" class="form-control" name="questions" required>
+                <label for="answers1">Answers (comma-separated)</label>
+                <input type="text" class="form-control" name="answers" required>
+                <label for="correctAnswer1">Correct Answer (index)</label>
+                <input type="number" class="form-control" name="correctAnswers" required>
+              </div>
+            </div>
+            <button type="button" class="btn btn-secondary mt-3" onclick="addQuestion()">Add Another Question</button>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" onclick="createQuiz()">Create Quiz</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   <script src="script.js"></script>
 </body>
